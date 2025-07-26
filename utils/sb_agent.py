@@ -5,16 +5,12 @@ from typing import Optional, Union, List
 from pydantic import BaseModel
 
 from ..parsers.python.parser import PythonBlockParser
-from utils.feature_dependencies import removeDuplicates
+from .feature_dependencies import removeDuplicates
 from .llm_utils import getLLMConnectInfo
 from .customize_system_prompt import system_prompt
-# from speedbuild.utils.system_prompt import new_system_prompt as system_prompt
-from dotenv import load_dotenv
 
-from utils.update_template_code import addOrUpdateCode
+from .update_template_code import addOrUpdateCode
 
-
-load_dotenv() 
 
 memory = [
     {"role": "system", "content": system_prompt},

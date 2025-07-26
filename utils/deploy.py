@@ -3,17 +3,17 @@ from pathlib import Path
 import zipfile
 
 from ..parsers.python.parser import PythonBlockParser
-from utils.extract import getTemplateFileNames
-from utils.feature_dependencies import removeDuplicates
+from .extract import getTemplateFileNames
+from .feature_dependencies import removeDuplicates
 
 import yaml
 
 from .llm_utils import getLLMConnectInfo
-from utils.query_split import query_splitter
-from utils.sb_agent import agent
-from utils.state import clearProjectState, copyFileToState, getOrCreateProjectSBId, updateState
-from utils.var_utils import get_assigned_variables
-from utils.write_dependency import sortFile, writeToFile
+from .query_split import query_splitter
+from .sb_agent import agent
+from .state import clearProjectState, copyFileToState, getOrCreateProjectSBId, updateState
+from .var_utils import get_assigned_variables
+from .write_dependency import sortFile, writeToFile
 
 user_home = str(Path.home())
 

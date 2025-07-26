@@ -2,9 +2,9 @@ import json
 import importlib
 import os
 
-from utils.utils import findFilePath
-from utils.venv_utils import get_activated_venv
-from utils.django_app_dependencies import getDjangoAppsPackage
+from .utils import findFilePath
+from .venv_utils import get_activated_venv
+from .django_app_dependencies import getDjangoAppsPackage
 
 def is_standard_library(module_name):
     return importlib.util.find_spec(module_name) is not None

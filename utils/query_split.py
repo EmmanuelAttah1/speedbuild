@@ -6,9 +6,6 @@ from typing import List
 from .sb_agent import getLLMClient
 from .task_prompt import prompt as system_prompt
 
-from dotenv import load_dotenv
-
-load_dotenv() 
 
 memory = [
     {"role": "system", "content": system_prompt},

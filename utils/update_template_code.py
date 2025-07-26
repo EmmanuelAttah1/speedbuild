@@ -1,5 +1,5 @@
-from utils.feature_dependencies import getBlockDependencies
-from utils.var_utils import get_assigned_variables
+from .feature_dependencies import getBlockDependencies
+from .var_utils import get_assigned_variables
 
 
 def removeDecorator(code):

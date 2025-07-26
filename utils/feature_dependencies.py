@@ -3,7 +3,7 @@ import ast
 import ast
 
 from ..parsers.python.parser import PythonBlockParser
-from utils.var_utils import get_assigned_variables, removeDecorator
+from .var_utils import get_assigned_variables, removeDecorator
 
 pattern = r'\b(?:\w+\.)+\w+[,]?\b'
 

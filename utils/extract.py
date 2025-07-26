@@ -2,12 +2,12 @@ import os
 import json
 import shutil
 
-from utils.utils import findFilePath
-from utils.django_utils import django_defaults
+from .utils import findFilePath
+from .django_utils import django_defaults
 from ..parsers.python.parser import PythonBlockParser
-from utils.write_dependency import OneStep, writeCodeToFile
-from utils.package_utils import get_package_name, is_standard_library
-from utils.feature_dependencies import extract_words_from_code, get_code_block_names, getBlockDependencies, getFileDependencies
+from .write_dependency import OneStep, writeCodeToFile
+from .package_utils import get_package_name, is_standard_library
+from .feature_dependencies import extract_words_from_code, get_code_block_names, getBlockDependencies, getFileDependencies
 
 
 def clear_folder(folder_path):
