@@ -87,9 +87,8 @@ speedbuild deploy auth --adapt "
 ## Supported Frameworks
 
 - ✅ **Django** - Full support
-- 🚧 **Flask** - Coming Q2 2025
-- 🚧 **FastAPI** - Coming Q2 2025
-- 🚧 **React** - Coming Q3 2025
+- 🚧 **Flask** - Coming Q3 2025
+- 🚧 **FastAPI** - Coming Q3 2025
 
 ## SpeedBuild Cloud (Coming Soon)
 
@@ -136,9 +135,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## Roadmap
 
-- **Q1 2025**: Django support, CLI tool, template extraction
-- **Q2 2025**: Flask/FastAPI support, SpeedBuild Cloud beta
-- **Q3 2025**: React/Vue support, MCP server integration
+- **Q2 2025**: Django support, CLI tool, template extraction
+- **Q3 2025**: Flask/FastAPI support, SpeedBuild Cloud betax,MCP server integration
 - **Q4 2025**: Multi-language ecosystem, enterprise features
 
 ## License
