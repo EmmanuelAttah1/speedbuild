@@ -121,6 +121,9 @@ We welcome contributions! SpeedBuild is open source and community-driven.
 git clone https://github.com/speedbuild/speedbuild.git
 cd speedbuild
 pip install -r requirements.txt
+
+#run as package
+python -m speedbuild.sb
 ```
 
 ### Contributing Templates
