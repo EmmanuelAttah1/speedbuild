@@ -9,23 +9,6 @@ SpeedBuild lets you extract full Django features (views, models, templates, conf
 [![Open Source](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Django](https://img.shields.io/badge/Framework-Django-092E20?logo=django)](https://djangoproject.com)
 
-## The Problem
-
-Developers spend 80% of their time rebuilding features that already exist in proven, production-ready form elsewhere. User authentication, payment processing, CRUD operations—how many times have you built these from scratch?
-
-AI tools generate code fast, but it breaks when real users touch it. You end up spending more time debugging than the AI saved you.
-
-## The SpeedBuild Solution
-
-Extract proven features from existing projects and safely adapt them to new ones:
-
-```bash
-# Extract a complete user authentication system
-speedbuild extract shop/views.py auth
-
-# Deploy it to a new project with adaptations
-speedbuild deploy auth 
-```
 
 ## How It Works
 
