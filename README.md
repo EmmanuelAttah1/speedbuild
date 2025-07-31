@@ -129,7 +129,7 @@ Team sharing, roles, and usage tracking
 - **From Scratch**: Days of development, repeated mistakes
 
 
-🙌 Contributing
+# Contributing
 SpeedBuild is free and open source. Star us on GitHub and contribute to the growing feature hub!
 [github logo] github.com/EmmanuelAttah1/speedbuild
 
