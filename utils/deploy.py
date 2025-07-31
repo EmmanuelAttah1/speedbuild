@@ -1,19 +1,17 @@
 import os
-from pathlib import Path
+import yaml
 import zipfile
+from pathlib import Path
 
-from ..parsers.python.parser import PythonBlockParser
+from .utils import getCurrentDjangoFiles
 from .extract import getTemplateFileNames
 from .feature_dependencies import removeDuplicates
+from ..parsers.python.parser import PythonBlockParser
 
-import yaml
-
-from .llm_utils import getLLMConnectInfo
-from .query_split import query_splitter
 from .sb_agent import agent
-from .state import clearProjectState, copyFileToState, getOrCreateProjectSBId, updateState
-from .var_utils import get_assigned_variables
+from .query_split import query_splitter
 from .write_dependency import sortFile, writeToFile
+from .state import clearProjectState, copyFileToState, getOrCreateProjectSBId, updateState
 
 user_home = str(Path.home())
 
@@ -78,7 +76,7 @@ def processFile(fileName,appName,project_path,template_path,feature_app_name=Non
     #get existing file content
     fileImports, fileCode = getAppFileContent(appName,fileName,project_path)
 
-    print("filename is this ", fileName)
+    # print("filename is this ", fileName)
 
     # old implementation
     fileCode.extend(code)
@@ -123,10 +121,9 @@ def processFile(fileName,appName,project_path,template_path,feature_app_name=Non
     "get all files in filePath"
 
     # TODO make this dynamic, get all python file in app folder
-    django_files = ["models.py","urls.py","views.py","admin.py"]
+    django_files = getCurrentDjangoFiles(filePath)#["models.py","urls.py","views.py","admin.py"]
 
     if "sb_app" not in fileName: # also check if filename is custom django names else write file in sb_utils folder
-        # print("here broski")
 
         new_file_path = fileName.replace(template_path,"")
         if new_file_path.startswith("/"):
@@ -153,16 +150,11 @@ def processFile(fileName,appName,project_path,template_path,feature_app_name=Non
                     if path.startswith("."):
                         path = path[1:]
 
-                    """
-                        from .sb_utils.mail import sendMail
-                        from .sb_utils.models import Profile
-                    """
 
                     if f"{path}.py" in django_files:
                         new_imports.append(f"from {appName}.{path} import {dependency}")
                         continue
 
-                    print(line, " new import")
                     if "sb_utils" in filePath:
                         line = line.replace(".sb_utils","")
 
@@ -223,10 +215,10 @@ def processFile(fileName,appName,project_path,template_path,feature_app_name=Non
 
     file_state_key = dest.replace(project_path,"")
 
-    print("file path is ",filePath)
-    print("file name is ", fileName)
-    print("state key is ", file_state_key)
-    print("file to update ", fileToUpdate)
+    # print("file path is ",filePath)
+    # print("file name is ", fileName)
+    # print("state key is ", file_state_key)
+    # print("file to update ", fileToUpdate)
 
     # state before write
     if project_id:
@@ -258,12 +250,15 @@ def processFile(fileName,appName,project_path,template_path,feature_app_name=Non
 
 def getTemplateFilteredFiles(template_unpack_path,feature_name):
     root_files = []
+    filtered_files = []
     files = getTemplateFileNames(template_unpack_path)
  
     for i in files:
         if i not in ["settings.py", f"sb_{feature_name}.yaml"] and i.endswith("md") == False:
             if len(i.split("/")) == 1:
+                # add to root_files also add to filtered_files
                 root_files.append(i)
+                filtered_files.append(i)
 
             elif len(i.split("/")) > 1:
                 filtered_files.append(i)
@@ -287,7 +282,7 @@ def getFeatureFromTemplate(template_path,project_root,template_name,django_root)
     # feature_name = template_path.split("/")[-1].split(".")[0]
     feature_name = [word for word in template_path.split("/") if ".zip" not in word][-1]
 
-    print("feature name is ",feature_name)
+    # print("feature name is ",feature_name)
 
     
     # path_to_template = f"{project_root}/.sb/{template_name}"

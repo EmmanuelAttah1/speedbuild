@@ -1,7 +1,33 @@
 import os
 import ast
+import requests
 from pathlib import Path
 from typing import List, Tuple
+
+from .server_address import url_address
+from .django_app_dependencies import save_cache
+
+
+def getCurrentDjangoFiles(path):
+    python_files = [file for file in os.listdir(path) if file.endswith(".py")]
+    return python_files
+
+def pullPythonPackageJSON():
+    try:
+        res = requests.get(url_address + "sb/packages/", timeout=10)
+        res.raise_for_status()
+        print(res.json())
+
+        save_cache(res.json())
+
+    except requests.exceptions.HTTPError as http_err:
+        raise ValueError(f"HTTP error occurred: {http_err} - Status code: {res.status_code}")
+    except requests.exceptions.ConnectionError:
+        raise ValueError("Connection error. Is the server running?")
+    except requests.exceptions.Timeout:
+        raise ValueError("Request timed out.")
+    except Exception as err:
+        raise ValueError (f"An error occurred: {err}")
 
 
 def extract_views_from_urls(urls_file_path: str) -> List[Tuple[str, str]]:

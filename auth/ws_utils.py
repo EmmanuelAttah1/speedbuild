@@ -6,9 +6,7 @@ import websockets
 import webbrowser
 
 from .cli_utils import updateAuthToken
-
-ws_address = "http://127.0.0.1:8000"
-app_address = "https://app.speedbuild.dev/"
+from ..utils.server_address import ws_address, app_address
 
 def caculateTimeDifference(past_time):
     current_time = time.time()
@@ -45,7 +43,7 @@ async def openAuthPage(code,page="login"):
         address = f"{app_address}register?token={code}"
 
     webbrowser.open(address)
-    response = await connect_to_websocket(f"ws://127.0.0.1:8000/ws/chat/{code}/")
+    response = await connect_to_websocket(f"{ws_address}chat/{code}/")
     print(response)
     userData = {
         "access_token":response['message']['access'],
@@ -61,7 +59,7 @@ async def openAuthPage(code,page="login"):
 
 async def connect_to_websocket(WEBSOCKET_URI,data=None):
     headers = {
-       "Origin": "http://127.0.0.1",  # Same origin as the server
+       "Origin": "https://backend.speedbuild.dev",  # Same origin as the server
     }
 
     async with websockets.connect(WEBSOCKET_URI,additional_headers=headers) as websocket:

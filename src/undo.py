@@ -82,8 +82,6 @@ def undoSBDeploy():
         with open(state_file_path,"r") as file:
             data = json.loads(file.read())
 
-            print("here with data ",data)
-
             actions = data['action']
             undo = data['undo']
 

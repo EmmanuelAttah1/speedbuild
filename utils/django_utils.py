@@ -73,7 +73,12 @@ class ManageDjangoSettings():
 
     def getTemplateMiddleWare(self,apps):
 
-        MIDDLEWARE = self.code_mappings["MIDDLEWARE"]
+        try:
+            MIDDLEWARE = self.code_mappings["MIDDLEWARE"]
+        except KeyError:
+            self.getSettingsVariablesName()
+            MIDDLEWARE = self.code_mappings["MIDDLEWARE"]
+            
         MIDDLEWARE = ast.literal_eval(MIDDLEWARE.split("=", 1)[1].strip())
 
         template_middleware = []

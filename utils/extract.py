@@ -1,6 +1,7 @@
 import os
-import json
 import shutil
+
+from .django_app_dependencies import load_cache
 
 from .utils import findFilePath
 from .django_utils import django_defaults
@@ -194,10 +195,12 @@ def extract_feature_code_and_dependencies(
         template_settings_import=[],
         template_confs = None,
         output_dir = None
-        ):
+    ):
     
     # print("feature file path ", feature_file_path)
     # print("output dir is ", output_dir)
+
+    cache = load_cache()
     
     # get template conf from OneStep
     packages,use_email,settings_conf = OneStep(
@@ -226,7 +229,7 @@ def extract_feature_code_and_dependencies(
             else:
                 #TODO: check cache to retrieve package name
                 if not is_standard_library(package):
-                    dep,dep_type = get_package_name(package)
+                    dep,dep_type = get_package_name(package,cache)
 
                     if dep_type == "str":
                         template_dep.add(dep)
@@ -360,28 +363,50 @@ def extract_feature_code_and_dependencies(
                                 
                     else:
                         # print("here ok processinf conf for ",main_dir)
-                        with open("sb_app_mapping_cache.json","r") as cacheFile:
-                            cache = json.loads(cacheFile.read())
-                            for item in cache:
-                                if main_dir in cache[item]:
-                                    template_dep.add(item)
+                        for item in cache:
+                            if main_dir in cache[item]:
+                                template_dep.add(item)
 
-                                    # add main_dir to installed_apps so we can get configurations associated with package
-                                    installed_apps.add(main_dir)
+                                # add main_dir to installed_apps so we can get configurations associated with package
+                                installed_apps.add(main_dir)
 
-                                    new_conf = settings.getDjangoAppsConfigurations(list(installed_apps))
-                                    # print("\nfound new ",new_conf,"\n")
+                                new_conf = settings.getDjangoAppsConfigurations(list(installed_apps))
+                                # print("\nfound new ",new_conf,"\n")
 
-                                    # check if main_dir is in source project installed apps
-                                    in_source_project_apps = settings.allSourceProjectApps
-                                    if main_dir not in in_source_project_apps:
-                                        installed_apps.remove(main_dir)
+                                # check if main_dir is in source project installed apps
+                                in_source_project_apps = settings.allSourceProjectApps
+                                if main_dir not in in_source_project_apps:
+                                    installed_apps.remove(main_dir)
 
-                                    # add to queue
-                                    for _conf in new_conf:
-                                        if _conf not in conf_list and _conf not in processed: 
-                                            conf_queue.append(_conf)
+                                # add to queue
+                                for _conf in new_conf:
+                                    if _conf not in conf_list and _conf not in processed: 
+                                        conf_queue.append(_conf)
 
-                                    remaining_conf = remaining_conf.difference(conf_list)
+                                remaining_conf = remaining_conf.difference(conf_list)
+
+                        # with open("sb_app_mapping_cache.json","r") as cacheFile:
+                        #     cache = json.loads(cacheFile.read())
+                        #     for item in cache:
+                        #         if main_dir in cache[item]:
+                        #             template_dep.add(item)
+
+                        #             # add main_dir to installed_apps so we can get configurations associated with package
+                        #             installed_apps.add(main_dir)
+
+                        #             new_conf = settings.getDjangoAppsConfigurations(list(installed_apps))
+                        #             # print("\nfound new ",new_conf,"\n")
+
+                        #             # check if main_dir is in source project installed apps
+                        #             in_source_project_apps = settings.allSourceProjectApps
+                        #             if main_dir not in in_source_project_apps:
+                        #                 installed_apps.remove(main_dir)
+
+                        #             # add to queue
+                        #             for _conf in new_conf:
+                        #                 if _conf not in conf_list and _conf not in processed: 
+                        #                     conf_queue.append(_conf)
+
+                        #             remaining_conf = remaining_conf.difference(conf_list)
 
     return [template_settings_import, template_confs, template_dep]

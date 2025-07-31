@@ -3,13 +3,16 @@ import sys
 import asyncio
 from pathlib import Path
 
+from .auth.auth import manageAuth
+from .utils.pull_template import pullInitialTemplates
+
 from .auth.sb_user import sbAuth
-from .auth.serverCall import pingServer
 from .src.undo import undoSBDeploy
+from .auth.serverCall import pingServer
 from .utils.package_utils import getPackageNameMapping
 from .src.extract_features import create_temp_from_feature
 from .src.deploy_features import convertFromTemplateToFeature
-from .utils.utils import extract_views_from_urls, findFilePath, getAbsolutePath
+from .utils.utils import extract_views_from_urls, findFilePath, getAbsolutePath, pullPythonPackageJSON
 
 def createTemplate(file_path, feature,project_name,packageToNameMapping,project_root):
 
@@ -83,7 +86,6 @@ def list_features():
 
 
 def handleExtract(subfolder=None,feature=None,project_path=""):
-    # print("project path ", project_path)
     project_root = project_path
     # get project name from root project path
     project_name = [i.strip() for i in project_path.split("/") if len(i.strip()) > 0][-1]
@@ -130,22 +132,34 @@ def handleExtract(subfolder=None,feature=None,project_path=""):
         abs_path = project_path + filePath
         views = extract_views_from_urls(abs_path)
 
+        dir_name = filePath.split("/")[0]
+
+        print("directory name is ",dir_name)
+        # return
+
         for view in views:
             view = view.split(".")
-            dir_name = view[0]
+
+            print("view list is ",view)
+
             if len(dir_name) == 0:
                 dir_name = "."
 
             file_name = view[1]
             feature_name = view[2]
 
+            # TODO Fix : we are assuming urls path are like :
+            # path("home",views.home,name="home")
+            # we are assuming the user is import views like 
+            # from . import views
+
             # if feature_name.endswith("/"):
             #     feature_name = feature_name[:len(feature_name)-1]
 
             # print("feature is ", feature_name)
-
+            print("here we are")
             print(f"folder : {dir_name} file : {file_name}.py feature is {feature_name} ",project_path)
-            createTemplate(project_path+f"views.py", feature_name,project_name,packageToNameMapping,project_root)
+            createTemplate(project_path+f"{dir_name}/views.py", feature_name,project_name,packageToNameMapping,project_root)
 
 
 def main(action,secPath,feature,project_path):
@@ -170,11 +184,18 @@ def main(action,secPath,feature,project_path):
         asyncio.run(sbAuth())
     elif action == "ping":
         pingServer()
+    elif action == "setup":
+        print("Seting up speedbuild")
+        pullInitialTemplates()
+        pullPythonPackageJSON()
+        asyncio.run(manageAuth("register"))
     else:
         print("Please Enter a valid action")
-        print("  - sb.py list    :\tto see extracted templates")
-        print("  - sb.py extract :\tto extract templates")
-        print("  - sb.py deploy  :\tto deploy template to a different project")
+        print("  - speedbuild setup   :\tInitial Setup")
+        print("  - speedbuild extract :\tto extract templates")
+        print("  - speedbuild list    :\tto see extracted templates")
+        print("  - speedbuild deploy  :\tto deploy template to a different project")
+        print("  - speedbuild auth    :\tto manage authentication and LLM configuration")
 
 
 def start():

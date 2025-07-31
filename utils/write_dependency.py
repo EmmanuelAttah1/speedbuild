@@ -96,7 +96,10 @@ def writeCodeToFile(file_path,code,imports, writeAfter=False, output_dir=None):
                 file.write("\n\n")
             if code is not None:
                 file.write(code)
-    # print("writing to ",dest)
+
+    # TODO : sort code
+    if "urls.py" not in dest:
+        sortFile(dest)
 
 
 def extract_settings_references(code):
@@ -167,7 +170,7 @@ def OneStep(
         processed = []
         ):
     
-    feature_name = feature
+    # feature_name = feature
     # print("running for feature ", feature, ' processed ', processed)
     packages = set()
     use_email = use_email
@@ -397,17 +400,20 @@ def writeToFile(filePath,content,fileName,conflicts=[]):
                 name = get_assigned_variables(chunk,True)
                 if isinstance(name,str):
                     if name in currentFileChunksNames:
-                        # print(currentFileCode,"\n\n code")
+                        """ Conflict Identified """
                         conflictChunkPosition = currentFileChunksNames.index(name) #assuming name appears only once
-                        oldCode = currentFileCode.pop(conflictChunkPosition)
+                        oldCode = currentFileCode[conflictChunkPosition]
 
-                        # print(conflictChunkPosition,f"\n{currentFileCode}\n code")
+                        if oldCode != chunk:
+                            # pop code
+                            currentFileCode.pop(conflictChunkPosition)
 
-                        # add conflict markers
-                        conflictCode = f"<<<<<<< SpeedBuild update \n{oldCode}\n=======\n{chunk}\n>>>>>>>"
-                        currentFileCode.insert(conflictChunkPosition, conflictCode)
+                            # add conflict markers
+                            conflictCode = f"<<<<<<< SpeedBuild update \n{oldCode}\n=======\n{chunk}\n>>>>>>>"
+                            currentFileCode.insert(conflictChunkPosition, conflictCode)
 
-                        conflicts.append(f"Merge conflict in {dest} : Failed to merge {name}")
+                            conflicts.append(f"Merge conflict in {dest} : Failed to merge {name}")
+
                         continue
 
                 currentFileCode.insert(0,chunk) # fresh non merge conflict code

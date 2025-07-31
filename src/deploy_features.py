@@ -126,7 +126,7 @@ def convertFromTemplateToFeature(project_path,template_path,template_name):
          settings.write(settings_code)
 
     # install dev dependencies
-    print("Installing dependencies")
+    print("Installing Feature dependencies")
     install_dependencies(template_yaml['dependencies'],venv)
 
     print("Feature deployed Successfully")

@@ -1,14 +1,18 @@
 import os
-import subprocess
+import json
+import time
 import shutil
 import tempfile
-import json
+import threading
+import subprocess
 import importlib.util
 import concurrent.futures
-import threading
-import time
 
-CACHE_FILE = "sb_app_mapping_cache.json"
+from pathlib import Path
+
+from .pushPackage import pushPythonPackageToServer
+
+CACHE_FILE = str(Path.home()) + "/.sb/sb_app_mapping_cache.json"
 CACHE_LOCK = threading.Lock()  # For thread-safe cache operations
 MAX_WORKERS = 5  # Reduced from 5 to avoid resource exhaustion
 TIMEOUT = 120  # Seconds to wait before considering a package installation hung
@@ -110,14 +114,33 @@ def safe_load_json(file_path):
         except FileNotFoundError:
             return {}
 
+# here
 def save_cache(data):
+    """
+    Saves the provided data to a cache file, merging it with any existing cached data.
+    Args:
+        data (dict): The data to be saved to the cache. This will be merged with the existing cache.
+    Raises:
+        Exception: If there is an error while writing to the cache file, an error message is printed.
+    """
     """Saves the app mapping to a cache file."""
     with CACHE_LOCK:
         # First load existing cache to merge with new data
         existing_cache = safe_load_json(CACHE_FILE)
         
-        # Merge and save
-        existing_cache.update(data)
+        # Only update if there is a difference
+        if any(existing_cache.get(k) != v for k, v in data.items()):
+            # existing_cache.update(data)
+            # send data to server for update and pull all package data
+            res = pushPythonPackageToServer(data)
+            if res is not None:
+                # set existing_cache to server response
+                existing_cache = res
+            else:
+                # merge offline data
+                # Merge and save
+                existing_cache.update(data)
+
         try:
             with open(CACHE_FILE, "w") as f:
                 json.dump(existing_cache, f, indent=4)

@@ -6,7 +6,7 @@ from .ws_utils import caculateTimeDifference
 
 
 max_access_lifespan = 5
-base_url = "http://127.0.0.1:8000/"
+base_url = "https://backend.speedbuild.dev/"
 
 
 def askUserToLogin():

@@ -10,6 +10,7 @@ supported_providers = ["openai","anthropic","google"]
 async def sbAuth():
     # remove auth keyword
     sys.argv.pop(1)
+    command = None
 
     try:
         command = sys.argv[1]
@@ -40,15 +41,26 @@ async def sbAuth():
                 else:
                     print("speedbuild llm <model_name>")
 
+
         elif command == "config":
             get_config()
 
         elif command == "login":
             print("logining in user")
             await manageAuth()
-        elif command == "setup":
+        elif command == "register":
             await manageAuth("register")
         else:
             raise IndexError
+        
     except IndexError:
-        print("we had an error")
+        if command is not None and command == "llm":
+            print("Please Enter a valid action for llm")
+            print("  - speedbuild auth llm model        :\tManage LLM model")
+            print("  - speedbuild auth llm provider     :\tManage LLM Provider Access")
+        else:
+            print("Please Enter a valid action for auth")
+            print("  - speedbuild auth config      :\tSee SpeedBuild Config and API Keys")
+            print("  - speedbuild auth login       :\tAuthenticate with server")
+            print("  - speedbuild auth register    :\tCreate new SpeedBuild account")
+            print("  - speedbuild auth llm         :\tManage LLM Configurations")
