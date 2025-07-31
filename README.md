@@ -30,7 +30,7 @@ speedbuild deploy auth
 ## How It Works
 
 ### 1. **Extract Complete Features**
-Our AST-powered engine traces every dependency of a feature—from database models to middleware configurations—ensuring nothing is missed.
+Our AST-powered engine traces every dependency of a feature, from database models to middleware configurations—ensuring nothing is missed.
 
 ### 2. **Adapt with AI** 
 Describe your requirements in plain English. SpeedBuild intelligently modifies the extracted code to fit your project's architecture.
