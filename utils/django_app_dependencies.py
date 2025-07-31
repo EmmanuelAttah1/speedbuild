@@ -127,7 +127,10 @@ def save_cache(data):
     with CACHE_LOCK:
         # First load existing cache to merge with new data
         existing_cache = safe_load_json(CACHE_FILE)
-        
+
+        if existing_cache == {}:
+            os.makedirs(CACHE_FILE, exist_ok=True)
+
         # Only update if there is a difference
         if any(existing_cache.get(k) != v for k, v in data.items()):
             # existing_cache.update(data)

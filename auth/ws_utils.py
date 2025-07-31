@@ -44,7 +44,7 @@ async def openAuthPage(code,page="login"):
 
     webbrowser.open(address)
     response = await connect_to_websocket(f"{ws_address}chat/{code}/")
-    print(response)
+    # print(response)
     userData = {
         "access_token":response['message']['access'],
         "refresh_token":response['message']['refresh'],
